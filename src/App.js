@@ -69,5 +69,4 @@ export default class App extends Component {
         <footer>foot</footer>
       </div>
     );
-  }
-}
+    }}
