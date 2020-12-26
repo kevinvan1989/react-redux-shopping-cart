@@ -3,6 +3,7 @@ import "./App.css";
 import data from "./data.json";
 import Products from "./components/Products";
 import Filter from "./components/Filter";
+import Cart from "./components/Cart";
 
 export default class App extends Component {
   constructor() {
@@ -11,8 +12,44 @@ export default class App extends Component {
       products: data.products,
       size: "",
       sort: "",
+      cartItems: []
     };
   }
+
+  removeFromCart = product => {
+    const cartItems = this.state.cartItems.slice();
+    this.setState({cartItems: cartItems.filter(item => item._id !== product._id)})
+  }
+
+  addToCart = (product) => {
+    // de .slice() maakt een copy
+    const cartItems = this.state.cartItems.slice();
+    let alreadyInCart = false;
+    cartItems.forEach(item => {
+      // Check if item is already in cart
+      if(item._id === product._id){
+        item.count++;
+        alreadyInCart = true;
+      }
+    });
+    if(!alreadyInCart){
+      cartItems.push({
+        ...product, count: 1
+      })
+
+      console.log(cartItems)
+    }
+
+    console.log(this.state)
+    this.setState({
+       ...this.state,
+       cartItems: cartItems
+     })
+     console.log(cartItems)
+
+  }
+
+
 
   sortProducts = (e) => {
     const sort = e.target.value; //highest or lowest
@@ -35,6 +72,7 @@ export default class App extends Component {
         products: data.products
       })
     }else{
+      console.log(e.target.value)
       this.setState({
         ...this.state,
         size: e.target.value,
@@ -61,9 +99,9 @@ export default class App extends Component {
                 sortProducts={this.sortProducts}
                 filterProducts={this.filterProducts}
               />
-              <Products products={this.state.products} />
+              <Products products={this.state.products} addToCart={this.addToCart} />
             </div>
-            <div className="sidebar">Cart Items</div>
+            <div className="sidebar"><Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart}/></div>
           </div>
         </main>
         <footer>foot</footer>
