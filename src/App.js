@@ -12,13 +12,18 @@ export default class App extends Component {
       products: data.products,
       size: "",
       sort: "",
-      cartItems: []
+      cartItems: localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")):[]
     };
+  }
+
+  createOrder = order => {
+    alert(`Need to save order for ${order.name}`)
   }
 
   removeFromCart = product => {
     const cartItems = this.state.cartItems.slice();
-    this.setState({cartItems: cartItems.filter(item => item._id !== product._id)})
+    this.setState({cartItems: cartItems.filter(item => item._id !== product._id)});
+    localStorage.setItem("cartItems", JSON.stringify(cartItems.filter(item => item._id !== product._id)));
   }
 
   addToCart = (product) => {
@@ -47,6 +52,7 @@ export default class App extends Component {
      })
      console.log(cartItems)
 
+     localStorage.setItem("cartItems", JSON.stringify(cartItems))
   }
 
 
@@ -101,7 +107,7 @@ export default class App extends Component {
               />
               <Products products={this.state.products} addToCart={this.addToCart} />
             </div>
-            <div className="sidebar"><Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart}/></div>
+            <div className="sidebar"><Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} createOrder={this.createOrder}/></div>
           </div>
         </main>
         <footer>foot</footer>
